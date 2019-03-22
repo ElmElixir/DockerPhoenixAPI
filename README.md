@@ -36,6 +36,8 @@ Phoenix/ElixirでAPIのログイン機能を作成する(guardian・guardianDB) 
 docker-compose run app mix ecto.create
 ```
 参考にした記事
+Phoenix 公式
+https://hexdocs.pm/phoenix/overview.html
 
 DockerでPhoenix Framework https://qiita.com/foxtrackjp/items/bc74f64eae3ce33c8125
 (DockerFileなどほぼそのまま)
