@@ -6,17 +6,16 @@
 ```
 docker-compose up -d
 ```
+### PhoenixProject作成
+```
+docker-compose run app mix phx.new . --app api --no-html --database mysql
+```
 
 ## Dockerコンテナ内へ
 `docker ps` などで確認してくんさい
 ```
 docker exec -it <developing docker name or ID> //bin/sh
 ```
-### PhoenixProject作成
-```
-mix phx.new . --app api --no-html --database mysql
-```
-
 
 #### ライブラリインストール
 ```
