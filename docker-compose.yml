@@ -1,26 +1,26 @@
 version: '3'
 services:
   db:
-    image: mysql:5.7.22
-    volumes:
-      - mysql:/var/lib/mysql
+    image: mysql:8.0.3
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: gJwWACGZqaukCjL7
-
-  app:
-    build: .
-    tty: true
     volumes:
-      - .:/app
-    ports:
-      - "80:80"
-      - "4000:4000"
+      - ./docker/mysql/volumes:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'      
+  web:
+    build: ./docker/elixir
+    container_name: "exweb"
+    working_dir: /opt/app
     command: mix phx.server
+    volumes:
+      - .:/opt/app
+    environment:
+      MYSQL_ROOT_USERNAME: 'root'
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_HOSTNAME: 'db'
+      MYSQL_PORT: '3306'
+    ports:
+      - '4000:4000'
     depends_on:
       - db
-
-volumes:
-  mysql:
-    driver: local

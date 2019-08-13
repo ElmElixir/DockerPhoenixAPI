@@ -4,14 +4,31 @@
 
 ## Dockerのビルド
 ```
-docker-compose up -d
+docker-compose build web
 ```
-### PhoenixProject作成
+### Elixirバージョン確認
 ```
-docker-compose run app mix phx.new . --app api --no-html --database mysql
+docker-compose run --rm web elixir -v
+```
+### Phoenix バージョン確認
+```
+docker-compose run --rm web mix phx.new --version
+```
+### MySQLコンテナ起動
+```
+docker-compose up -d mysql
 ```
 
-## Dockerコンテナ内へ
+### PhoenixProject作成
+```
+docker-compose run --rm web mix phx.new . --no-brunch --no-webpack　--no-html --database mysql
+```
+### DB Migrate
+```
+docker-compose run --rm web mix ecto.create
+```
+
+## Dockerコンテナ内へ入る場合
 `docker ps` などで確認してくんさい
 ```
 docker exec -it <developing docker name or ID> //bin/sh
@@ -24,10 +41,7 @@ mix deps.get
 参考記事
 Phoenix/ElixirでAPIのログイン機能を作成する(guardian・guardianDB) https://qiita.com/yujikawa/items/fe262eb98c5be713d8fb
 
-### DB Migrate
-```
-mix ecto.create
-```
+
 
 ### 追加（Login機能を入れる場合用)
 
