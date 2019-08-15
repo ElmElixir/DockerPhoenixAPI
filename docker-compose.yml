@@ -1,16 +1,16 @@
 version: '3'
 services:
   db:
-    image: mysql:8.0.3
+    image: mysql:5.7
     ports:
       - "3306:3306"
     volumes:
       - ./docker/mysql/volumes:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'password'      
-  web:
-    build: ./docker/elixir
-    container_name: "exweb"
+  app:
+    build: ./
+    container_name: "web_app"
     working_dir: /opt/app
     command: mix phx.server
     volumes:
