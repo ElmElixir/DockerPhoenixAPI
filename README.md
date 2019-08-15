@@ -1,10 +1,13 @@
 # dockerElmPhoenix
 フロントエンドをelm バックエンドのAPIをElixir
 データベースをMysqlとして起動します。
+後日ShellScriptでまとめたい。
+
 ## docker compose ファイル
-MySQL8.0以降はまだ対応していない？
-そのため5.7で
+MySQL8.0以降はまだ対応していない？そのため5.7にしています。
+
 mariaex error #222
+
 https://github.com/xerions/mariaex/issues/222
 ```
 version: '3'
@@ -92,6 +95,10 @@ config :app, App.Repo,
 ```
 docker-compose run --rm app mix ecto.create
 ```
+### 起動する。
+```
+docker-compose up
+```
 
 ### Elixirバージョン確認
 ```
@@ -106,6 +113,11 @@ docker-compose run --rm app mix phx.new --version
 `docker ps` などで確認してくんさい
 ```
 docker exec -it <developing docker name or ID> //bin/sh
+```
+
+##終了時
+```
+docker-compose down
 ```
 
 参考記事
