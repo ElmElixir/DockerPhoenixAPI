@@ -45,7 +45,7 @@ services:
     ports:
       - "8800:8800"
     volumes:
-      - ./web/:/var/lib/front
+      - ./web/:/var/lib/web
 ```
 ## Dockerのビルド
 バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
