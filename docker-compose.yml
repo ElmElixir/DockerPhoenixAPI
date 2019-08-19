@@ -2,15 +2,16 @@ version: '3'
 services:
   db:
     image: mysql:5.7
+    container_name: "dev_db"
     ports:
       - "3306:3306"
     volumes:
-      - ./docker/mysql/volumes:/var/lib/mysql
+      - ./mysql/volumes:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'password'      
-  app:
+  api:
     build: ./
-    container_name: "web_app"
+    container_name: "api_app"
     working_dir: /opt/app
     command: mix phx.server
     volumes:
@@ -23,4 +24,10 @@ services:
     ports:
       - '4000:4000'
     depends_on:
-      - db
+      - db 
+  web:
+    container_name: "web_app"
+    ports:
+      - "8800:8800"
+    volumes:
+      - ./front/:/var/lib/front
