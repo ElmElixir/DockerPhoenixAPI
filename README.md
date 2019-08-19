@@ -2,6 +2,8 @@
 フロントエンドをelm バックエンドのAPIをElixir
 データベースをMysqlとして起動します。
 後日ShellScriptでまとめたい。
+Elmは別にコンテナにしたほうが良いとおもった。
+
 
 ## docker compose ファイル
 MySQL8.0以降はまだ対応していない？そのため5.7にしています。
@@ -14,15 +16,16 @@ version: '3'
 services:
   db:
     image: mysql:5.7
+    container_name: "dev_db"
     ports:
       - "3306:3306"
     volumes:
-      - ./docker/mysql/volumes:/var/lib/mysql
+      - ./mysql/volumes:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'password'      
-  app:
+  api:
     build: ./
-    container_name: "web_app"
+    container_name: "api_app"
     working_dir: /opt/app
     command: mix phx.server
     volumes:
@@ -36,12 +39,18 @@ services:
       - '4000:4000'
     depends_on:
       - db
-
+ 
+  web:
+    container_name: "web_app"
+    ports:
+      - "8800:8800"
+    volumes:
+      - ./web/:/var/lib/front
 ```
 ## Dockerのビルド
 バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
 ```
-docker-compose build app
+docker-compose build api
 ```
 ### MySQLコンテナ起動
 DBを起動させます
@@ -91,7 +100,7 @@ config :app, App.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
   password: "password",//ココ
-  database: "app_dev",
+  database: "api_dev",
   hostname: "db",　//ココ
   pool_size: 10
 [中略]
@@ -129,11 +138,12 @@ docker-compose run --rm app mix phx.new --version
 docker-compose ファイルで設定した`container_name: "web_app"`を指定していますので container name でDocker内に入ります。
 
 ```
-docker exec -it web_app //bin/sh
+docker exec -it web_ap //bin/sh
 ```
 これでDockerのコンテナ内に入れました。
 
 ### elm の設定
+準備中
 
 ```
 /opt/app/ # 
