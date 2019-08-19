@@ -9,6 +9,7 @@ RUN \
       git make g++ wget curl inotify-tools \
       nodejs nodejs-npm && \
     npm install npm -g --no-progress && \
+    npm install --unsafe-perm -g elm && \
     update-ca-certificates --fresh && \
     rm -rf /var/cache/apk/*
 
