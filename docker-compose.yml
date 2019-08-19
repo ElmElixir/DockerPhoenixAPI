@@ -24,10 +24,11 @@ services:
     ports:
       - '4000:4000'
     depends_on:
-      - db 
+      - db
+ 
   web:
     container_name: "web_app"
     ports:
       - "8800:8800"
     volumes:
-      - ./front/:/var/lib/front
+      - ./web/:/var/lib/web
