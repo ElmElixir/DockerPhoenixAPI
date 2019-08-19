@@ -160,3 +160,5 @@ https://hexdocs.pm/phoenix/overview.html
   https://qiita.com/sand/items/849c919b0d957ee99b9d
  - elm 0.19 で JSONを使ってjsと通信したメモ
   https://qiita.com/hibohiboo/items/33a8dcf462bd8e4a55e0
+ - elm-lang examples
+  https://elm-lang.org/examples
