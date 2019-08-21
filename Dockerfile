@@ -1,6 +1,6 @@
 FROM elixir:alpine
 
-# Install NPM
+# Install Npm Yarn Elm
 RUN \
     mkdir -p /opt/app && \
     chmod -R 777 /opt/app && \
@@ -9,7 +9,7 @@ RUN \
       git make g++ wget curl inotify-tools \
       nodejs nodejs-npm && \
     npm install npm -g --no-progress && \
-    npm install --unsafe-perm -g elm && \
+    apk add yarn && \
     update-ca-certificates --fresh && \
     rm -rf /var/cache/apk/*
 

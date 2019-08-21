@@ -25,10 +25,10 @@ services:
       - '4000:4000'
     depends_on:
       - db
- 
   web:
+    build: ./
     container_name: "web_app"
     ports:
       - "8800:8800"
     volumes:
-      - ./web/:/var/lib/web
+      - ./web/volumes:/opt/app/web

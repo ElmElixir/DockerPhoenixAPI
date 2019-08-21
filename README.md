@@ -39,13 +39,13 @@ services:
       - '4000:4000'
     depends_on:
       - db
- 
   web:
+    build: ./
     container_name: "web_app"
     ports:
       - "8800:8800"
     volumes:
-      - ./web/:/var/lib/web
+      - ./web/volumes:/opt/app/web
 ```
 ## Dockerのビルド
 バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
@@ -64,7 +64,7 @@ docker-compose up -d db
 （特に理由はないですがポスグレの場合はDocker-Compose.ymlをポスグレに修正してください）
 
 ```
-docker-compose run --rm app mix phx.new . --database mysql
+docker-compose run --rm app mix phx.new . --database mysql --no-html --no-webpack
 ```
 #### ライブラリ追加
 dapter の` {:plug_cowboy, "~> 1.0"},`を追加　
@@ -138,7 +138,7 @@ docker-compose run --rm app mix phx.new --version
 docker-compose ファイルで設定した`container_name: "web_app"`を指定していますので container name でDocker内に入ります。
 
 ```
-docker exec -it web_ap //bin/sh
+docker exec -it web_app //bin/sh
 ```
 これでDockerのコンテナ内に入れました。
 
