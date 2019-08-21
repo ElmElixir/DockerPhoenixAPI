@@ -18,7 +18,7 @@ services:
     image: mysql:5.7
     container_name: "dev_db"
     ports:
-      - "3306:3306"
+      - "4400:4400"
     volumes:
       - ./mysql/volumes:/var/lib/mysql
     environment:
@@ -34,9 +34,9 @@ services:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
       MYSQL_HOSTNAME: 'db'
-      MYSQL_PORT: '3306'
+      MYSQL_PORT: '4400'
     ports:
-      - '4000:4000'
+      - '3307:3307'
     depends_on:
       - db
   web:
@@ -64,7 +64,7 @@ docker-compose up -d db
 （特に理由はないですがポスグレの場合はDocker-Compose.ymlをポスグレに修正してください）
 
 ```
-docker-compose run --rm app mix phx.new . --database mysql --no-html --no-webpack
+docker-compose run --rm api mix phx.new . --database mysql --no-html
 ```
 #### ライブラリ追加
 dapter の` {:plug_cowboy, "~> 1.0"},`を追加　
@@ -80,7 +80,7 @@ config/mix.exs内へ追加
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:plug_cowboy, "~> 1.0"},　//ココ
+      {:plug_cowboy, "~> 1.0"},　#ココ
       {:cowboy, "~> 1.0"}
     ]
   end
@@ -100,8 +100,7 @@ config :app, App.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
   password: "password",//ココ
-  database: "api_dev",
-  hostname: "db",　//ココ
+  database: "app_dev",
   pool_size: 10
 [中略]
 
@@ -110,7 +109,7 @@ config :app, App.Repo,
 ### DB Migrate
 DB情報を更新
 ```
-docker-compose run --rm app mix ecto.create
+docker-compose run --rm api mix ecto.create
 ```
 # 起動する。
 アプリを起動します。
