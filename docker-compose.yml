@@ -4,7 +4,7 @@ services:
     image: mysql:5.7
     container_name: "dev_db"
     ports:
-      - "4400:4400"
+      - "3306:3306"
     volumes:
       - ./mysql/volumes:/var/lib/mysql
     environment:
@@ -20,15 +20,17 @@ services:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
       MYSQL_HOSTNAME: 'db'
-      MYSQL_PORT: '4400'
+      MYSQL_PORT: '3306'
     ports:
-      - '4400:4400'
+      - '4000:4000'
     depends_on:
       - db
   web:
     build: ./
+    image: node
     container_name: "web_app"
     ports:
-      - "8800:8800"
+      - "8000:8000"
     volumes:
       - ./web/volumes:/opt/app/web
+    tty: true

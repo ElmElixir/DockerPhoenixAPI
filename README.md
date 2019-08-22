@@ -18,7 +18,7 @@ services:
     image: mysql:5.7
     container_name: "dev_db"
     ports:
-      - "4400:4400"
+      - "3306:3306"
     volumes:
       - ./mysql/volumes:/var/lib/mysql
     environment:
@@ -34,18 +34,20 @@ services:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
       MYSQL_HOSTNAME: 'db'
-      MYSQL_PORT: '4400'
+      MYSQL_PORT: '3306'
     ports:
-      - '3307:3307'
+      - '4000:4000'
     depends_on:
       - db
   web:
     build: ./
+    image: node
     container_name: "web_app"
     ports:
-      - "8800:8800"
+      - "8000:8000"
     volumes:
       - ./web/volumes:/opt/app/web
+    tty: true
 ```
 ## Dockerのビルド
 バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
@@ -71,6 +73,7 @@ dapter の` {:plug_cowboy, "~> 1.0"},`を追加　
 
 config/mix.exs内へ追加
 ```
+[中略]
   defp deps do
     [
       {:phoenix, "~> 1.3.4"},
@@ -84,11 +87,13 @@ config/mix.exs内へ追加
       {:cowboy, "~> 1.0"}
     ]
   end
+  
+[中略]
 ```
 #### ライブラリインストール
 Elixirライブラリをインストールします。
 ```
-docker-compose run --rm app mix deps.get
+docker-compose run --rm api mix deps.get
 ```
 
 #### 開発環境のDB接続準備
@@ -99,8 +104,9 @@ docker-compose run --rm app mix deps.get
 config :app, App.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "password",//ココ
+  password: "password",
   database: "app_dev",
+  hostname: "db",
   pool_size: 10
 [中略]
 
@@ -142,12 +148,16 @@ docker exec -it web_app //bin/sh
 これでDockerのコンテナ内に入れました。
 
 ### elm の設定
-準備中
+ cd web/
+ にてElm用のディレクトリに移動します。
 
 ```
-/opt/app/ # 
+/opt/app/ #  cd web/
 ```
-
+/opt/app/web # elm reactor
+すると
+Go to <http://localhost:8000> to see your project dashboard.
+ダッシュボードがhttp://localhost:8000に表示ざれます
 ## 作業終了時
 ```
 docker-compose down
