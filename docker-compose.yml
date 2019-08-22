@@ -25,10 +25,12 @@ services:
       - '4000:4000'
     depends_on:
       - db
- 
   web:
+    build: ./
+    image: node
     container_name: "web_app"
     ports:
-      - "8800:8800"
+      - "8000:8000"
     volumes:
-      - ./web/:/var/lib/front
+      - ./web/volumes:/opt/app/web
+    tty: true

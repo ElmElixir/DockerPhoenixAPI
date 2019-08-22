@@ -2,6 +2,8 @@
 フロントエンドをelm バックエンドのAPIをElixir
 データベースをMysqlとして起動します。
 後日ShellScriptでまとめたい。
+Elmは別にコンテナにしたほうが良いとおもった。
+
 
 ## docker compose ファイル
 MySQL8.0以降はまだ対応していない？そのため5.7にしています。
@@ -14,15 +16,16 @@ version: '3'
 services:
   db:
     image: mysql:5.7
+    container_name: "dev_db"
     ports:
       - "3306:3306"
     volumes:
-      - ./docker/mysql/volumes:/var/lib/mysql
+      - ./mysql/volumes:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'password'      
-  app:
+  api:
     build: ./
-    container_name: "web_app"
+    container_name: "api_app"
     working_dir: /opt/app
     command: mix phx.server
     volumes:
@@ -36,12 +39,20 @@ services:
       - '4000:4000'
     depends_on:
       - db
-
+  web:
+    build: ./
+    image: node
+    container_name: "web_app"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./web/volumes:/opt/app/web
+    tty: true
 ```
 ## Dockerのビルド
 バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
 ```
-docker-compose build app
+docker-compose build api
 ```
 ### MySQLコンテナ起動
 DBを起動させます
@@ -55,13 +66,14 @@ docker-compose up -d db
 （特に理由はないですがポスグレの場合はDocker-Compose.ymlをポスグレに修正してください）
 
 ```
-docker-compose run --rm app mix phx.new . --database mysql
+docker-compose run --rm api mix phx.new . --database mysql --no-html
 ```
 #### ライブラリ追加
 dapter の` {:plug_cowboy, "~> 1.0"},`を追加　
 
 config/mix.exs内へ追加
 ```
+[中略]
   defp deps do
     [
       {:phoenix, "~> 1.3.4"},
@@ -71,15 +83,17 @@ config/mix.exs内へ追加
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:plug_cowboy, "~> 1.0"},　//ココ
+      {:plug_cowboy, "~> 1.0"},　#ココ
       {:cowboy, "~> 1.0"}
     ]
   end
+  
+[中略]
 ```
 #### ライブラリインストール
 Elixirライブラリをインストールします。
 ```
-docker-compose run --rm app mix deps.get
+docker-compose run --rm api mix deps.get
 ```
 
 #### 開発環境のDB接続準備
@@ -90,9 +104,9 @@ docker-compose run --rm app mix deps.get
 config :app, App.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "password",//ココ
+  password: "password",
   database: "app_dev",
-  hostname: "db",　//ココ
+  hostname: "db",
   pool_size: 10
 [中略]
 
@@ -101,7 +115,7 @@ config :app, App.Repo,
 ### DB Migrate
 DB情報を更新
 ```
-docker-compose run --rm app mix ecto.create
+docker-compose run --rm api mix ecto.create
 ```
 # 起動する。
 アプリを起動します。
@@ -134,11 +148,16 @@ docker exec -it web_app //bin/sh
 これでDockerのコンテナ内に入れました。
 
 ### elm の設定
+ cd web/
+ にてElm用のディレクトリに移動します。
 
 ```
-/opt/app/ # 
+/opt/app/ #  cd web/
 ```
-
+/opt/app/web # elm reactor
+すると
+Go to <http://localhost:8000> to see your project dashboard.
+ダッシュボードがhttp://localhost:8000に表示ざれます
 ## 作業終了時
 ```
 docker-compose down
