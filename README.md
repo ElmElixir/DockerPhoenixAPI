@@ -64,9 +64,10 @@ docker-compose up -d db
 ### PhoenixProject作成
 デフォルトはpostgreSQLであるためここではMySQLで起動します。
 （特に理由はないですがポスグレの場合はDocker-Compose.ymlをポスグレに修正してください）
+API機能のみなのでほかのHTML生成はなし
 
 ```
-docker-compose run --rm api mix phx.new . --database mysql --no-html
+docker-compose run --rm api mix phx.new . --database mysql --no-html --no-brunch
 ```
 #### ライブラリ追加
 dapter の` {:plug_cowboy, "~> 1.0"},`を追加　
