@@ -1,8 +1,7 @@
 # dockerElmPhoenix
 フロントエンドをelm バックエンドのAPIをElixir
 データベースをMysqlとして起動します。
-後日ShellScriptでまとめたい。
-Elmは別にコンテナにしたほうが良いとおもった。
+APIとフロントエンドを分けた理由はディレクトリを明示的にしたかったためと開発マシンにインストールするのが嫌だったため。
 
 
 ## docker compose ファイル
@@ -65,7 +64,6 @@ docker-compose up -d db
 デフォルトはpostgreSQLであるためここではMySQLで起動します。
 （特に理由はないですがポスグレの場合はDocker-Compose.ymlをポスグレに修正してください）
 API機能のみなのでほかのHTML生成はなし
-
 ```
 docker-compose run --rm api mix phx.new . --database mysql --no-html --no-brunch
 ```
@@ -81,8 +79,6 @@ config/mix.exs内へ追加
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:mariaex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.10"},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:plug_cowboy, "~> 1.0"},　#ココ
       {:cowboy, "~> 1.0"}
@@ -118,17 +114,13 @@ DB情報を更新
 ```
 docker-compose run --rm api mix ecto.create
 ```
-# 起動する。
+# フロントエンドを起動する。
 アプリを起動します。
+この時点でフロントエンドも起動します。
 ```
 docker-compose up -d
 ```
-`http://localhost:4000` でPhoenixの画面が
-Welcome to Phoenix!
-A productive web framework that
-does not compromise speed and maintainability.
-
-出ればOKです。
+`http://localhost:4000` でPhoenixの画面でルーティングのエラーメッセージが出ればOKです。後ほどElm側でルーティングします。
 
 ### Elixirバージョン確認
 ```
@@ -139,7 +131,7 @@ docker-compose run --rm app elixir -v
 docker-compose run --rm app mix phx.new --version
 ```
 
-## Dockerコンテナ内へ入る場合
+## Dockerコンテナ内へ入って作業
 注意：一応`docker ps` などで確認してくんさい
 docker-compose ファイルで設定した`container_name: "web_app"`を指定していますので container name でDocker内に入ります。
 
@@ -153,12 +145,12 @@ docker exec -it web_app //bin/sh
  にてElm用のディレクトリに移動します。
 
 ```
-/opt/app/ #  cd web/
+/opt/app/ #  cd web/ && yarn add elm
 ```
-/opt/app/web # elm reactor
+`/opt/app/web # elm reactor`
 すると
 Go to <http://localhost:8000> to see your project dashboard.
-ダッシュボードがhttp://localhost:8000に表示ざれます
+ダッシュボードが http://localhost:8000 に表示されます
 ## 作業終了時
 ```
 docker-compose down
