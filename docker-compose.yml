@@ -2,35 +2,31 @@ version: '3'
 services:
   db:
     image: mysql:5.7
-    container_name: "dev_db"
+    container_name: 'dev_db'
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
       - ./mysql/volumes:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 'password'      
-  api:
+      MYSQL_ROOT_USERNAME: 'root'
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_HOSTNAME: 'localhost'     
+  app:
     build: ./
-    container_name: "api_app"
+    container_name: 'web_app'
     working_dir: /opt/app
-    command: mix phx.server
     volumes:
       - .:/opt/app
+      - ./web:/opt/app/web
     environment:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_HOSTNAME: 'db'
+      MYSQL_HOSTNAME: 'localhost'
       MYSQL_PORT: '3306'
     ports:
+      - '3000:3000'
       - '4000:4000'
+      - '8000:8000'
+    tty: true
     depends_on:
       - db
-  web:
-    build: ./
-    image: node
-    container_name: "web_app"
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./web/volumes:/opt/app/web
-    tty: true

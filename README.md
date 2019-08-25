@@ -51,7 +51,7 @@ services:
 ## Dockerのビルド
 バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
 ```
-docker-compose build api
+docker-compose build app
 ```
 ### MySQLコンテナ起動
 DBを起動させます
@@ -90,7 +90,7 @@ config/mix.exs内へ追加
 #### ライブラリインストール
 Elixirライブラリをインストールします。
 ```
-docker-compose run --rm api mix deps.get
+docker-compose run --rm app mix deps.get
 ```
 
 #### 開発環境のDB接続準備
@@ -112,7 +112,7 @@ config :app, App.Repo,
 ### DB Migrate
 DB情報を更新
 ```
-docker-compose run --rm api mix ecto.create
+docker-compose run --rm app mix ecto.create
 ```
 # フロントエンドを起動する。
 アプリを起動します。
