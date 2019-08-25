@@ -156,6 +156,9 @@ Dockerコンテナを停止します。
 ```
 docker-compose down
 ```
+
+悩んでるところは docker-compose up -d で mix phx.server と elm reactor を同時に動かしたいんですけれどもどうしよコンテナ分けるなど簡単にしたい。
+
 # 参考にしたページ
 ## Docker の設定
  - Elixir/Phoenix+MySQL5.7環境をDocker/Docker Composeで整え開発する。
