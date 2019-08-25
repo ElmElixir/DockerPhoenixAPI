@@ -15,6 +15,7 @@ services:
     build: ./
     container_name: 'web_app'
     working_dir: /opt/app
+    command: mix phx.server
     volumes:
       - .:/opt/app
       - ./web:/opt/app/web

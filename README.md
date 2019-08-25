@@ -1,8 +1,6 @@
 # dockerElmPhoenix
 フロントエンドをelm バックエンドのAPIをElixir
 データベースをMysqlとして起動します。
-APIとフロントエンドを分けた理由はディレクトリを明示的にしたかったためと開発マシンにインストールするのが嫌だったため。
-
 
 ## docker compose ファイル
 MySQL8.0以降はまだ対応していない？そのため5.7にしています。
@@ -15,38 +13,34 @@ version: '3'
 services:
   db:
     image: mysql:5.7
-    container_name: "dev_db"
+    container_name: 'dev_db'
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
       - ./mysql/volumes:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 'password'      
-  api:
+      MYSQL_ROOT_USERNAME: 'root'
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_HOSTNAME: 'localhost'     
+  app:
     build: ./
-    container_name: "api_app"
+    container_name: 'web_app'
     working_dir: /opt/app
-    command: mix phx.server
     volumes:
       - .:/opt/app
+      - ./web:/opt/app/web
     environment:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_HOSTNAME: 'db'
+      MYSQL_HOSTNAME: 'localhost'
       MYSQL_PORT: '3306'
     ports:
+      - '3000:3000'
       - '4000:4000'
+      - '8000:8000'
+    tty: true
     depends_on:
       - db
-  web:
-    build: ./
-    image: node
-    container_name: "web_app"
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./web/volumes:/opt/app/web
-    tty: true
 ```
 ## Dockerのビルド
 バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
@@ -58,6 +52,28 @@ DBを起動させます
 `-d`を入れてバックグランドで動かします。
 ```
 docker-compose up -d db
+
+## Dockerコンテナ内へ入って作業
+注意：一応`docker ps` などで確認してくんさい
+docker-compose ファイルで設定した`container_name: "web_app"`を指定していますので container name でDocker内に入ります。
+
+```
+docker exec -it web_app //bin/sh
+```
+これでDockerのコンテナ内に入れました。
+以降はDocker内の作業です。
+
+### elm の設定
+ cd web/
+ にてElm用のディレクトリに移動します。
+
+```
+cd web/ && elm init
+```
+`/opt/app/web # elm reactor`
+すると
+Go to <http://localhost:8000> to see your project dashboard.
+ダッシュボードが http://localhost:8000 に表示されます
 ```
 
 ### PhoenixProject作成
@@ -65,10 +81,10 @@ docker-compose up -d db
 （特に理由はないですがポスグレの場合はDocker-Compose.ymlをポスグレに修正してください）
 API機能のみなのでほかのHTML生成はなし
 ```
-docker-compose run --rm api mix phx.new . --database mysql --no-html --no-brunch
+ cd ../ && mix phx.new . --database mysql --no-html --no-brunch
 ```
 #### ライブラリ追加
-dapter の` {:plug_cowboy, "~> 1.0"},`を追加　
+adapter の` {:plug_cowboy, "~> 1.0"},`を追加　
 
 config/mix.exs内へ追加
 ```
@@ -90,7 +106,7 @@ config/mix.exs内へ追加
 #### ライブラリインストール
 Elixirライブラリをインストールします。
 ```
-docker-compose run --rm app mix deps.get
+mix deps.get
 ```
 
 #### 開発環境のDB接続準備
@@ -112,46 +128,31 @@ config :app, App.Repo,
 ### DB Migrate
 DB情報を更新
 ```
-docker-compose run --rm app mix ecto.create
+mix ecto.create
 ```
-# フロントエンドを起動する。
+# Phoenixを起動する。
 アプリを起動します。
-この時点でフロントエンドも起動します。
 ```
-docker-compose up -d
+mix phx.server
 ```
 `http://localhost:4000` でPhoenixの画面でルーティングのエラーメッセージが出ればOKです。後ほどElm側でルーティングします。
+止める場合は `Ctl + C` でPhoenixを停止できます。
 
 ### Elixirバージョン確認
 ```
-docker-compose run --rm app elixir -v
+elixir -v
 ```
 ### Phoenix バージョン確認
 ```
-docker-compose run --rm app mix phx.new --version
+mix phx.new --version
 ```
 
-## Dockerコンテナ内へ入って作業
-注意：一応`docker ps` などで確認してくんさい
-docker-compose ファイルで設定した`container_name: "web_app"`を指定していますので container name でDocker内に入ります。
-
-```
-docker exec -it web_app //bin/sh
-```
-これでDockerのコンテナ内に入れました。
-
-### elm の設定
- cd web/
- にてElm用のディレクトリに移動します。
-
-```
-/opt/app/ #  cd web/ && yarn add elm
-```
-`/opt/app/web # elm reactor`
-すると
-Go to <http://localhost:8000> to see your project dashboard.
-ダッシュボードが http://localhost:8000 に表示されます
 ## 作業終了時
+Dockerコンテナから離脱します。
+```
+exit
+```
+Dockerコンテナを停止します。
 ```
 docker-compose down
 ```
