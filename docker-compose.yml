@@ -10,10 +10,9 @@ services:
     environment:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_HOSTNAME: 'localhost'     
   app:
     build: ./
-    container_name: 'web_app'
+    container_name: 'web_api'
     working_dir: /opt/app
     command: mix phx.server
     volumes:
@@ -22,12 +21,21 @@ services:
     environment:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_HOSTNAME: 'localhost'
+      MYSQL_HOSTNAME: 'db'
       MYSQL_PORT: '3306'
     ports:
       - '3000:3000'
       - '4000:4000'
-      - '8000:8000'
     tty: true
     depends_on:
-      - db
+      - db    
+  web:
+    image: node:12
+    container_name: 'web_app'
+    working_dir: /opt/app/web
+    command: elm reactor 
+    volumes:
+      - ./web:/opt/app/web
+    ports:
+      - '8000:8000'
+    tty: true
