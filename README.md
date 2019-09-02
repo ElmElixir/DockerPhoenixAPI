@@ -43,7 +43,7 @@ services:
       - db
 ```
 ## Dockerのビルド
-バックグラウンドのAPIを作成するため、Phoenixを立ち上げます。
+バックグラウンドのAPIを作成するため、まずびるど。
 ```
 docker-compose build
 ```

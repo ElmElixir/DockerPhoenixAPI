@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 services:
   db:
     image: mysql:5.7
@@ -30,7 +30,7 @@ services:
     depends_on:
       - db    
   web:
-    image: node:12
+    build: ./
     container_name: 'web_app'
     working_dir: /opt/app/web
     command: elm reactor 
