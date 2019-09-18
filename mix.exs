@@ -19,6 +19,7 @@ defmodule App.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
+      applications: [:logger, :oauth2]
       mod: {App.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
