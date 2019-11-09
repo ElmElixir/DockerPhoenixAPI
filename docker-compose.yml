@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   db:
-    image: mariadb
+    image: mysql:5.7
     container_name: 'dev_db'
     ports:
       - '3307:3307'
@@ -10,7 +10,7 @@ services:
     environment:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_HOSTNAME: 'localhost'
+      MYSQL_HOSTNAME: 'localhost'     
   app:
     build: ./
     container_name: 'web_api'
@@ -28,12 +28,12 @@ services:
       - '4000:4000'
     tty: true
     depends_on:
-      - db
+      - db    
   web:
     build: ./
     container_name: 'web_app'
     working_dir: /opt/app/web
-    command: elm reactor
+    command: elm reactor 
     volumes:
       - ./web:/opt/app/web
     ports:
