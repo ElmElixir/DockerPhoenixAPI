@@ -5,12 +5,15 @@ services:
     container_name: 'dev_db'
     ports:
       - '3307:3307'
-    volumes:
-      - ./mysql/volumes:/var/lib/mysql
     environment:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
       MYSQL_HOSTNAME: 'db'
+    volumes:
+      - ./mysql/volumes:/var/lib/mysql
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./log/mysql:/var/log/mysql
   app:
     build: ./
     container_name: 'web_api'
