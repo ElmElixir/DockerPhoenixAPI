@@ -1,16 +1,19 @@
-version: '3.3'
+version: '3.7'
 services:
   db:
-    image: mariadb
+    image: mysql:5.7
     container_name: 'dev_db'
     ports:
-      - '3307:3307'
-    volumes:
-      - ./mysql/volumes:/var/lib/mysql
+      - '3307:3306'
     environment:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_HOSTNAME: 'localhost'
+      MYSQL_HOSTNAME: 'db'
+    volumes:
+      - ./db/volumes:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./log/mysql:/var/log/mysql
   app:
     build: ./
     container_name: 'web_api'
@@ -22,14 +25,25 @@ services:
       MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'password'
       MYSQL_HOSTNAME: 'db'
-      MYSQL_PORT: '3307'
-    ports:
-      - '3000:3000'
-      - '4000:4000'
+      MYSQL_PORT: '3306'
     tty: true
     depends_on:
       - db
+
   web:
+    image: nginx:1.17-alpine
+    depends_on:
+      - app
+    ports:
+      - 4000:80
+    volumes:
+      - ./src:/work
+      - ./logs:/var/log/nginx
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    environment:
+      - TZ=${TZ}
+
+  front:
     build: ./
     container_name: 'web_app'
     working_dir: /opt/app/web
