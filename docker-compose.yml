@@ -18,6 +18,9 @@ services:
     build: ./
     container_name: 'web_api'
     working_dir: /opt/app
+    ports:
+      - 8000:8000
+      - 4000:4000
     volumes:
       - .:/opt/app
     environment:
@@ -34,7 +37,7 @@ services:
     ports:
       - 10080:80
     volumes:
-      - ./src:/work
+      - .:/opt/app
       - ./logs:/var/log/nginx
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     environment:

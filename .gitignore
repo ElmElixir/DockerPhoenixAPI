@@ -28,3 +28,4 @@ npm-debug.log
 /config/*.secret.exs
 .ash_history
 logs/
+.elm/
