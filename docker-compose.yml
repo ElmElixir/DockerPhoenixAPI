@@ -25,18 +25,19 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
       MYSQL_HOSTNAME: 'db'
       MYSQL_PORT: '3306'
-    ports:
-      - 4000:4000
     tty: true
     depends_on:
       - db
-      
-  front:
-    build: ./
-    container_name: 'web_app'
-    working_dir: /opt/app/web
-    volumes:
-      - ./web:/opt/app/web
+  web:
+    image: nginx:1.17-alpine
+    container_name: 'web_server'
     ports:
-      - '8000:8000'
-    tty: true
+      - 10080:80
+    volumes:
+      - ./src:/work
+      - ./logs:/var/log/nginx
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    environment:
+      - TZ=${TZ}
+    depends_on:
+      - app
