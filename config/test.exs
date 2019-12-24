@@ -11,7 +11,7 @@ config :logger, level: :warn
 
 # Configure your database
 config :app, App.Repo,
-  adapter: Ecto.Adapters.MySQL,
+  adapter: Ecto.Adapters.MyXQL,
   username: "root",
   password: "",
   database: "app_test",

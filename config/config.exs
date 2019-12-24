@@ -16,6 +16,8 @@ config :app, AppWeb.Endpoint,
   render_errors: [view: AppWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: App.PubSub,
            adapter: Phoenix.PubSub.PG2]
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
 
 # Configures Elixir's Logger
 config :logger, :console,

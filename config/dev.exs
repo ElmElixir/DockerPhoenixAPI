@@ -50,7 +50,7 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :app, App.Repo,
-  adapter: Ecto.Adapters.MySQL,
+  adapter: Ecto.Adapters.MyXQL,
   username: "root",
   password: "password",
   database: "app_dev",

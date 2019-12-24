@@ -29,3 +29,8 @@ npm-debug.log
 .ash_history
 logs/
 .elm/
+elm/elm-stuff/0.19.1/i.dat
+elm/elm-stuff/0.19.1/lock
+elm/elm-stuff/0.19.1/d.dat
+elm/elm-stuff/0.19.1/Main.elmo
+elm/elm-stuff/0.19.1/o.dat
